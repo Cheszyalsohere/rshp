@@ -17,8 +17,11 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
+    protected $table = 'user';
+    protected $primaryKey = 'iduser';
     protected $fillable = [
-        'name',
+        'nama',
         'email',
         'password',
     ];
@@ -44,5 +47,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function pemilik ()
+    {
+        return $this->hasOne(Pemilik::class, 'iduser', 'iduser');
     }
 }

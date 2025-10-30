@@ -41,4 +41,14 @@ class SiteController extends Controller
     {
         return view('dokter');
     }
+
+    public function CekKoneksi()
+    {
+        try {
+            \DB::connection()->getPdo();
+            return "Koneksi database berhasil!";
+        } catch (\Exception $e) {
+            return "Koneksi database gagal: " . $e->getMessage();
+        }
+    }
 }
