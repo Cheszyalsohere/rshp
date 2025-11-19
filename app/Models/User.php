@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Pemilik::class, 'iduser', 'iduser');
     }
+
+    public function roleUser()
+    {
+        return $this->hasMany(RoleUser::class, 'iduser', 'iduser');
+    }
 }

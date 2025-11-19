@@ -501,14 +501,50 @@
             <div class="logo">RSHP UNAIR</div>
             <button class="mobile-menu-btn">☰</button>
             <div class="nav-links">
-                <a href={{ route('home') }}>Home</a>
-                <a href={{ route('about') }}>About Us</a>
-                <a href={{ route('dokter') }}>Dokter Jaga</a>
-                <a href={{ route('layanan') }} >Layanan</a>
-                <a href={{ route('kontak') }}>Kontak</a>
-                <a href={{ route('organisasi') }}>Struktur Organisasi</a>
-                <a href={{ route('login') }} class="login-btn">Login</a>
-            </div>
+
+    {{-- Menu Umum (Selalu muncul) --}}
+    <a href="{{ route('home') }}">Home</a>
+    <a href="{{ route('about') }}">About Us</a>
+    <a href="{{ route('dokter') }}">Dokter Jaga</a>
+    <a href="{{ route('layanan') }}">Layanan</a>
+    <a href="{{ route('kontak') }}">Kontak</a>
+    <a href="{{ route('organisasi') }}">Struktur Organisasi</a>
+
+    @guest
+        {{-- Jika BELUM login --}}
+        <a href="{{ route('login') }}" class="login-btn">Login</a>
+
+    @else
+        {{-- Jika SUDAH login, cek role --}}
+        @php( $role = strtolower(trim(Auth::user()->role)) )
+
+        @if ($role === 'admin')
+            <a href="{{ route('Admin.dashboard') }}">Dashboard</a>
+        @elseif ($role === 'dokter')
+            <a href="{{ route('Dokter.Dashboard.index') }}">Dashboard</a>
+        @elseif ($role === 'resepsionis')
+            <a href="{{ route('Resepsionis.Dashboard.index') }}">Dashboard</a>
+        @elseif ($role === 'perawat')
+            <a href="{{ route('Perawat.Dashboard.index') }}">Dashboard</a>
+        @elseif ($role === 'pemilik')
+            <a href="{{ route('Pemilik.Dashboard.index') }}">Dashboard</a>
+        @else
+            <a href="/home">Dashboard</a>
+        @endif
+
+        {{-- Tombol Logout --}}
+        <a href="{{ route('logout') }}"
+           onclick="event.preventDefault(); document.getElementById('logout-form-public').submit();">
+            Logout
+        </a>
+
+        <form id="logout-form-public" action="{{ route('logout') }}" method="POST" style="display:none;">
+            @csrf
+        </form>
+    @endguest
+
+</div>
+
         </div>
     </nav>
 
