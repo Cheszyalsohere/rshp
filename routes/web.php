@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\JenisHewan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,15 +20,58 @@ Route::get('/cek-koneksi', [\App\Http\Controllers\Site\SiteController::class, 'C
 
 Route::middleware('isAdministrator')->group(function () {
         Route::get('admin/dashboard', [\App\Http\Controllers\Admin\dashboard_admin::class, 'index'])->name('admin.dashboard');
-        Route::get('/admin/jenis-hewan', [\App\Http\Controllers\Admin\JenisHewan::class, 'index'])->name('admin.jenis-hewan');
-        Route::get('/admin/pemilik', [\App\Http\Controllers\Admin\PemilikController::class, 'index'])->name('admin.pemilik');
-        Route::get('/admin/ras-hewan', [\App\Http\Controllers\Admin\RasHewanController::class, 'index'])->name('admin.ras-hewan');
-        Route::get('/admin/role', [\App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin.role');
-        Route::get('/admin/role-user', [\App\Http\Controllers\Admin\RoleUserController::class, 'index'])->name('admin.role-user');
+        Route::prefix('admin/jenis-hewan')->name('Admin.jenis-hewan.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\JenisHewanController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\Admin\JenisHewanController::class, 'store'])->name('store');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\JenisHewanController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\JenisHewanController::class, 'destroy'])->name('destroy');
+    });
+       Route::prefix('admin/pemilik')->name('Admin.Pemilik.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\PemilikController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\Admin\PemilikController::class, 'store'])->name('store');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\PemilikController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\PemilikController::class, 'destroy'])->name('destroy');
+    });
+        
+        Route::prefix('admin/ras-hewan')->name('Admin.RasHewan.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\RasHewanController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\Admin\RasHewanController::class, 'store'])->name('store');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\RasHewanController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\RasHewanController::class, 'destroy'])->name('destroy');
+    });
+        Route::prefix('admin/role')->name('Admin.Role.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\RoleController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\Admin\RoleController::class, 'store'])->name('store');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\RoleController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('destroy');
+    });
+       
+        Route::prefix('admin/role-user')->name('Admin.RoleUser.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\RoleUserController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\Admin\RoleUserController::class, 'store'])->name('store');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\RoleUserController::class, 'update'])->name('update'); // ID yang dikirim adalah ID RoleUser
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\RoleUserController::class, 'destroy'])->name('destroy');
+    });
         Route::get('/admin/daftar-pet', [\App\Http\Controllers\Admin\DaftarPetController::class, 'index'])->name('admin.daftar-pet');
-        Route::get('/admin/kategori', [\App\Http\Controllers\Admin\KategoriController::class, 'index'])->name('admin.kategori');
-        Route::get('/admin/kategori-klinis', [\App\Http\Controllers\Admin\KategoriKlinisController::class, 'index'])->name('admin.kategori-klinis');
-        Route::get('/admin/kode-tindakan', [\App\Http\Controllers\Admin\KodeTindakanTerapiController::class, 'index'])->name('admin.kode-tindakan');
+       
+        Route::prefix('admin/kategori')->name('Admin.Kategori.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\KategoriController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\Admin\KategoriController::class, 'store'])->name('store');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\KategoriController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\KategoriController::class, 'destroy'])->name('destroy');
+    });
+        Route::prefix('admin/kategori-klinis')->name('Admin.KategoriKlinis.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\KategoriKlinisController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\Admin\KategoriKlinisController::class, 'store'])->name('store');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\KategoriKlinisController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\KategoriKlinisController::class, 'destroy'])->name('destroy');
+    });
+        Route::prefix('admin/kode-tindakan')->name('Admin.KodeTindakan.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\KodeTindakanController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\Admin\KodeTindakanController::class, 'store'])->name('store');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\KodeTindakanController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\KodeTindakanController::class, 'destroy'])->name('destroy');
+    });
 });
 
 
