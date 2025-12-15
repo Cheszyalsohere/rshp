@@ -62,19 +62,19 @@ class LoginController extends Controller
             'user_status' => $user->RoleUser->first()->status ?? 'active'
         ]);
 
-        $userRole = $user->RoleUser->first()->idrole ?? null;
+        $userRole = $user->RoleUser[0]->idrole ?? null;
 
         switch ($userRole) {
             case 1:
                 return redirect()->route('admin.dashboard')->with('success', 'Login Berhasil!');
             case 2:
-                return redirect()->route('resepsionis.dashboard')->with('success', 'Login Berhasil!');
+                return redirect()->route('Dokter.Dashboard.index')->with('success', 'Login Berhasil!');
             case 3:
-                return redirect()->route('dokter.dashboard')->with('success', 'Login Berhasil!');
+                return redirect()->route('Perawat.Dashboard.index')->with('success', 'Login Berhasil!');
             case 4:
-                return redirect()->route('perawat.dashboard')->with('success', 'Login Berhasil!');
+                return redirect()->route('Resepsionis.Dashboard.index')->with('success', 'Login Berhasil!');
             default:
-                return redirect()->route('pemilik.dashboard')->with('success', 'Login Berhasil!');
+                return redirect()->route('Pemilik.Dashboard.index')->with('success', 'Login Berhasil!');
                 
         }
     }

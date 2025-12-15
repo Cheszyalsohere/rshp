@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class isPemilik
+class perawat
 {
     /**
      * Handle an incoming request.
@@ -15,6 +15,12 @@ class isPemilik
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        $userRole = session('user_role');
+
+        if($userRole === 3) {
+            return $next($request);
+        } else {
+            return back()->with('error', 'Akses ditolak. Anda bukan Perawat.');
+        }
     }
 }

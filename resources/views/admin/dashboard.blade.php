@@ -1,159 +1,527 @@
 @extends('layouts.app')
 
-@section('title', 'Data Master - RSHP')
+@section('title', 'Dashboard Admin - RSHP')
 
 @section('styles')
 <style>
     body {
-        font-family: 'Poppins', sans-serif;
-        background-color: #f8f9fa;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        background: #f9fafb;
+        min-height: 100vh;
     }
-    .page-header {
-        padding: 2rem 0 1rem;
+    .page-container {
+        padding: 2rem 0;
     }
-    .page-title {
-        font-size: 2rem;
+    
+    /* Welcome Card */
+    .welcome-card {
+        background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        margin-bottom: 2.5rem;
+        overflow: hidden;
+        position: relative;
+    }
+    .welcome-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        transform: translate(50%, -50%);
+    }
+    .welcome-card .card-body {
+        padding: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+    .welcome-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        color: white;
+    }
+    .welcome-title {
+        color: white;
+        font-size: 1.75rem;
         font-weight: 600;
-        color: #212529;
+        margin-bottom: 0.25rem;
+    }
+    .welcome-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.938rem;
+        margin-bottom: 0;
+    }
+    .welcome-divider {
+        border-color: rgba(255, 255, 255, 0.2);
+        margin: 1.5rem 0;
+    }
+    .welcome-description {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.875rem;
+        line-height: 1.6;
+    }
+    .welcome-list {
+        margin: 0.75rem 0 0 0;
+        padding-left: 1.25rem;
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.875rem;
+    }
+    .welcome-list li {
         margin-bottom: 0.5rem;
     }
-    .page-subtitle {
-        color: #6c757d;
-        font-size: 0.95rem;
+    
+    /* Section Header */
+    .section-header {
+        margin-bottom: 1.5rem;
     }
-    .navbar {
-        border: 1px solid #e0e0e0;
+    .section-title {
+        color: #111827;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
-    .navbar-nav .nav-link {
-        color: #495057;
+    .section-title i {
+        color: #6b7280;
+        font-size: 1.5rem;
+    }
+    .section-description {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+    
+    /* Feature Cards */
+    .feature-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        height: 100%;
+        overflow: hidden;
+    }
+    .feature-card:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        transform: translateY(-4px);
+    }
+    .feature-card-header {
+        padding: 1.5rem 1.5rem 1rem;
+        background: white;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    .feature-card-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+    }
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+    .feature-icon.blue {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    .feature-icon.green {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    .feature-icon.red {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    .feature-icon.yellow {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    .feature-icon.purple {
+        background: #e9d5ff;
+        color: #6b21a8;
+    }
+    .feature-card-body {
+        padding: 0;
+    }
+    
+    /* Menu List */
+    .menu-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .menu-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #f3f4f6;
+        color: #374151;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .menu-item:last-child {
+        border-bottom: none;
+    }
+    .menu-item:hover {
+        background: #f9fafb;
+        color: #111827;
+    }
+    .menu-item.disabled {
+        background: #f9fafb;
+        color: #9ca3af;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+    .menu-item-content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .menu-item-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6b7280;
+        font-size: 1rem;
+    }
+    .menu-item:hover .menu-item-icon {
+        background: #e5e7eb;
+        color: #374151;
+    }
+    .menu-item-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+    }
+    .menu-item-label {
         font-weight: 500;
-        padding: 0.75rem 1rem;
-        transition: all 0.2s;
+        font-size: 0.875rem;
     }
-    .navbar-nav .nav-link:hover {
-        color: #0d6efd;
-        background-color: rgba(13, 110, 253, 0.1);
+    .menu-item-description {
+        font-size: 0.75rem;
+        color: #9ca3af;
     }
-    .dropdown-menu {
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    .menu-item-arrow {
+        color: #d1d5db;
+        font-size: 0.875rem;
     }
-    .dropdown-item {
-        padding: 0.5rem 1rem;
-        color: #495057;
-        transition: all 0.2s;
+    .menu-item:hover .menu-item-arrow {
+        color: #6b7280;
+        transform: translateX(2px);
     }
-    .dropdown-item:hover {
-        background-color: #f8f9fa;
-        color: #0d6efd;
+    
+    /* Section Spacing */
+    .section-spacing {
+        margin-bottom: 3rem;
     }
-    .dropdown-item i {
-        width: 16px;
-        text-align: center;
+    
+    @media (max-width: 768px) {
+        .welcome-title {
+            font-size: 1.5rem;
+        }
+        .section-title {
+            font-size: 1.125rem;
+        }
+        .feature-card-title {
+            font-size: 1rem;
+        }
     }
 </style>
 @endsection
 
 @section('content')
-<div class="container">
-    <div class="page-header">
-        <h1 class="page-title">Data Master</h1>
-        <p class="page-subtitle">Kelola semua data master sistem</p>
-    </div>
-
-    <!-- Top Navbar for Data Master -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded shadow-sm mb-4">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#dataMasterNavbar" aria-controls="dataMasterNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="dataMasterNavbar">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    {{-- Dropdown for animal data management --}}
-                    <li class="nav-item dropdown">
-                        <button class="nav-link dropdown-toggle" id="dataHewanDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Toggle Data Hewan dropdown menu">
-                            <i class="fas fa-paw me-1" aria-hidden="true"></i>Data Hewan
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dataHewanDropdown">
-                            @if(Route::has('Admin.jenis-hewan.index'))
-                                <li><a class="dropdown-item" href="{{ route('Admin.jenis-hewan.index') }}"><i class="fas fa-tag me-2" aria-hidden="true"></i>Jenis Hewan</a></li>
-                            @else
-                                <li><a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="fas fa-tag me-2" aria-hidden="true"></i>Jenis Hewan (Unavailable)</a></li>
-                            @endif
-                            @if(Route::has('Admin.RasHewan.index'))
-                                <li><a class="dropdown-item" href="{{ route('Admin.RasHewan.index') }}"><i class="fas fa-dog me-2" aria-hidden="true"></i>Ras Hewan</a></li>
-                            @else
-                                <li><a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="fas fa-dog me-2" aria-hidden="true"></i>Ras Hewan (Unavailable)</a></li>
-                            @endif
-                            @if(Route::has('admin.daftar-pet'))
-                                <li><a class="dropdown-item" href="{{ route('admin.daftar-pet') }}"><i class="fas fa-list me-2" aria-hidden="true"></i>Daftar Pet</a></li>
-                            @else
-                                <li><a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="fas fa-list me-2" aria-hidden="true"></i>Daftar Pet (Unavailable)</a></li>
-                            @endif
-                        </ul>
-                    </li>
-                    {{-- Dropdown for user data management --}}
-                    <li class="nav-item dropdown">
-                        <button class="nav-link dropdown-toggle" id="dataPenggunaDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Toggle Data Pengguna dropdown menu">
-                            <i class="fas fa-users me-1" aria-hidden="true"></i>Data Pengguna
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dataPenggunaDropdown">
-                            @if(Route::has('Admin.RoleUser.index'))
-                                <li><a class="dropdown-item" href="{{ route('Admin.RoleUser.index') }}"><i class="fas fa-users-cog me-2" aria-hidden="true"></i>Role User</a></li>
-                            @else
-                                <li><a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="fas fa-users-cog me-2" aria-hidden="true"></i>Role User (Unavailable)</a></li>
-                            @endif
-                            @if(Route::has('Admin.Role.index'))
-                                <li><a class="dropdown-item" href="{{ route('Admin.Role.index') }}"><i class="fas fa-user-shield me-2" aria-hidden="true"></i>Role</a></li>
-                            @else
-                                <li><a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="fas fa-user-shield me-2" aria-hidden="true"></i>Role (Unavailable)</a></li>
-                            @endif
-                            @if(Route::has('Admin.Pemilik.index'))
-                                <li><a class="dropdown-item" href="{{ route('Admin.Pemilik.index') }}"><i class="fas fa-id-card me-2" aria-hidden="true"></i>Data Pemilik</a></li>
-                            @else
-                                <li><a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="fas fa-id-card me-2" aria-hidden="true"></i>Data Pemilik (Unavailable)</a></li>
-                            @endif
-                        </ul>
-                    </li>
-                    {{-- Dropdown for medical data management --}}
-                    <li class="nav-item dropdown">
-                        <button class="nav-link dropdown-toggle" id="dataMedisDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Toggle Data Medis dropdown menu">
-                            <i class="fas fa-briefcase-medical me-1" aria-hidden="true"></i>Data Medis
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dataMedisDropdown">
-                            @if(Route::has('Admin.Kategori.index'))
-                                <li><a class="dropdown-item" href="{{ route('Admin.Kategori.index') }}"><i class="fas fa-bookmark me-2" aria-hidden="true"></i>Data Kategori</a></li>
-                            @else
-                                <li><a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="fas fa-bookmark me-2" aria-hidden="true"></i>Data Kategori (Unavailable)</a></li>
-                            @endif
-                            @if(Route::has('Admin.KategoriKlinis.index'))
-                                <li><a class="dropdown-item" href="{{ route('Admin.KategoriKlinis.index') }}"><i class="fas fa-stethoscope me-2" aria-hidden="true"></i>Data Kategori Klinis</a></li>
-                            @else
-                                <li><a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="fas fa-stethoscope me-2" aria-hidden="true"></i>Data Kategori Klinis (Unavailable)</a></li>
-                            @endif
-                            @if(Route::has('Admin.KodeTindakan.index'))
-                                <li><a class="dropdown-item" href="{{ route('Admin.KodeTindakan.index') }}"><i class="fas fa-prescription me-2" aria-hidden="true"></i>Kode Tindakan Terapi</a></li>
-                            @else
-                                <li><a class="dropdown-item disabled" href="#" aria-hidden="true" aria-disabled="true"><i class="fas fa-prescription me-2"></i>Kode Tindakan Terapi (Unavailable)</a></li>
-                            @endif
-                        </ul>
-                    </li>
+<div class="page-container">
+    <div class="container">
+        
+        {{-- Welcome Card --}}
+        <div class="welcome-card">
+            <div class="card-body">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="welcome-icon">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h1 class="welcome-title">Selamat Datang, {{ Auth::user()->nama }}!</h1>
+                        <p class="welcome-subtitle">Anda login sebagai <strong>Administrator</strong></p>
+                    </div>
+                </div>
+                <hr class="welcome-divider">
+                <p class="welcome-description mb-2">
+                    Sebagai pengelola sistem, Anda memiliki akses penuh untuk:
+                </p>
+                <ul class="welcome-list">
+                    <li>Mengelola <strong>Data Master</strong> (Referensi sistem)</li>
+                    <li>Mengelola <strong>Data Transaksional</strong> (Operasional harian klinik)</li>
+                    <li>Mengatur hak akses pengguna dan pengaturan sistem</li>
                 </ul>
             </div>
         </div>
-    </nav>
 
-    <!-- Welcome Content -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body text-center py-5">
-                    <i class="fas fa-database fa-4x text-primary mb-3"></i>
-                    <h3 class="card-title">Selamat Datang di Data Master</h3>
-                    <p class="card-text text-muted">Pilih kategori data yang ingin Anda kelola dari navbar di atas.</p>
+        {{-- Section: Data Master --}}
+        <div class="section-spacing">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-database-gear"></i>
+                    Data Master
+                </h2>
+                <p class="section-description">Kelola data referensi utama sistem</p>
+            </div>
+
+            <div class="row g-4">
+                {{-- Master Hewan --}}
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-card-header">
+                            <h3 class="feature-card-title">
+                                <span class="feature-icon blue">
+                                    <i class="bi bi-github"></i>
+                                </span>
+                                Master Hewan
+                            </h3>
+                        </div>
+                        <div class="feature-card-body">
+                            <ul class="menu-list">
+                                <li>
+                                    <a href="{{ route('Admin.jenis-hewan.index') }}" class="menu-item">
+                                        <div class="menu-item-content">
+                                            <div class="menu-item-icon">
+                                                <i class="bi bi-tags"></i>
+                                            </div>
+                                            <span class="menu-item-label">Jenis Hewan</span>
+                                        </div>
+                                        <i class="bi bi-chevron-right menu-item-arrow"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('Admin.RasHewan.index') }}" class="menu-item">
+                                        <div class="menu-item-content">
+                                            <div class="menu-item-icon">
+                                                <i class="bi bi-tag"></i>
+                                            </div>
+                                            <span class="menu-item-label">Ras Hewan</span>
+                                        </div>
+                                        <i class="bi bi-chevron-right menu-item-arrow"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.daftar-pet.index') }}" class="menu-item">
+                                        <div class="menu-item-content">
+                                            <div class="menu-item-icon">
+                                                <i class="bi bi-github"></i>
+                                            </div>
+                                            <span class="menu-item-label">Data Pet</span>
+                                        </div>
+                                        <i class="bi bi-chevron-right menu-item-arrow"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Data Pengguna --}}
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-card-header">
+                            <h3 class="feature-card-title">
+                                <span class="feature-icon green">
+                                    <i class="bi bi-people"></i>
+                                </span>
+                                Data Pengguna
+                            </h3>
+                        </div>
+                        <div class="feature-card-body">
+                            <ul class="menu-list">
+                                <li>
+                                    <a href="{{ route('Admin.RoleUser.index') }}" class="menu-item">
+                                        <div class="menu-item-content">
+                                            <div class="menu-item-icon">
+                                                <i class="bi bi-person"></i>
+                                            </div>
+                                            <span class="menu-item-label">Data User</span>
+                                        </div>
+                                        <i class="bi bi-chevron-right menu-item-arrow"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('Admin.Role.index') }}" class="menu-item">
+                                        <div class="menu-item-content">
+                                            <div class="menu-item-icon">
+                                                <i class="bi bi-person-badge"></i>
+                                            </div>
+                                            <span class="menu-item-label">Manajemen Role</span>
+                                        </div>
+                                        <i class="bi bi-chevron-right menu-item-arrow"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('Admin.Pemilik.index') }}" class="menu-item">
+                                        <div class="menu-item-content">
+                                            <div class="menu-item-icon">
+                                                <i class="bi bi-person-vcard"></i>
+                                            </div>
+                                            <span class="menu-item-label">Data Pemilik</span>
+                                        </div>
+                                        <i class="bi bi-chevron-right menu-item-arrow"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Master Medis --}}
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-card-header">
+                            <h3 class="feature-card-title">
+                                <span class="feature-icon red">
+                                    <i class="bi bi-hospital"></i>
+                                </span>
+                                Master Medis
+                            </h3>
+                        </div>
+                        <div class="feature-card-body">
+                            <ul class="menu-list">
+                                <li>
+                                    <a href="{{ route('Admin.Kategori.index') }}" class="menu-item">
+                                        <div class="menu-item-content">
+                                            <div class="menu-item-icon">
+                                                <i class="bi bi-bookmark"></i>
+                                            </div>
+                                            <span class="menu-item-label">Kategori</span>
+                                        </div>
+                                        <i class="bi bi-chevron-right menu-item-arrow"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('Admin.KategoriKlinis.index') }}" class="menu-item">
+                                        <div class="menu-item-content">
+                                            <div class="menu-item-icon">
+                                                <i class="bi bi-clipboard2-pulse"></i>
+                                            </div>
+                                            <span class="menu-item-label">Kategori Klinis</span>
+                                        </div>
+                                        <i class="bi bi-chevron-right menu-item-arrow"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('Admin.KodeTindakan.index') }}" class="menu-item">
+                                        <div class="menu-item-content">
+                                            <div class="menu-item-icon">
+                                                <i class="bi bi-bandaid"></i>
+                                            </div>
+                                            <span class="menu-item-label">Kode Terapi</span>
+                                        </div>
+                                        <i class="bi bi-chevron-right menu-item-arrow"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        {{-- Section: Data Transaksional --}}
+        <div>
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-clipboard-data"></i>
+                    Data Transaksional
+                </h2>
+                <p class="section-description">Kelola kegiatan operasional dan layanan harian</p>
+            </div>
+
+            <div class="row g-4">
+                {{-- Pasien & Kunjungan --}}
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-card-header">
+                            <h3 class="feature-card-title">
+                                <span class="feature-icon yellow">
+                                    <i class="bi bi-heart-pulse"></i>
+                                </span>
+                                Pasien & Kunjungan
+                            </h3>
+                        </div>
+                        <div class="feature-card-body">
+                            <ul class="menu-list">
+                                <li>
+                                    <a href="{{ route('Admin.TemuDokter.index') }}" class="menu-item">
+                                        <div class="menu-item-content">
+                                            <div class="menu-item-icon">
+                                                <i class="bi bi-calendar-check"></i>
+                                            </div>
+                                            <div class="menu-item-text">
+                                                <span class="menu-item-label">Pendaftaran / Reservasi</span>
+                                                <span class="menu-item-description">Jadwal temu dokter</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Rekam Medis --}}
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-card-header">
+                            <h3 class="feature-card-title">
+                                <span class="feature-icon purple">
+                                    <i class="bi bi-activity"></i>
+                                </span>
+                                Rekam Medis
+                            </h3>
+                        </div>
+                        <div class="feature-card-body">
+                            <ul class="menu-list">
+                                <li>
+                                    <a href="{{ route('Admin.RekamMedis.index') }}" class="menu-item">
+                                        <div class="menu-item-content">
+                                            <div class="menu-item-icon">
+                                                <i class="bi bi-file-medical"></i>
+                                            </div>
+                                            <div class="menu-item-text">
+                                                <span class="menu-item-label">Data Rekam Medis</span>
+                                                <span class="menu-item-description">Riwayat pemeriksaan</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 @endsection
