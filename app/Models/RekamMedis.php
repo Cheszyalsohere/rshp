@@ -13,11 +13,11 @@ class RekamMedis extends Model
     protected $primaryKey = 'idrekam_medis';
 
     protected $fillable = [
-        'id_reservasi_dokter', // Kunjungan mana yang diperiksa?
-        'dokter_pemeriksa',   // Siapa dokternya? (ID RoleUser)
-        'anamnesa',           // Keluhan awal
-        'temuan_klinis',      // Hasil periksa
-        'diagnosa',           // Kesimpulan penyakit
+        'id_reservasi_dokter', 
+        'dokter_pemeriksa',   
+        'anamnesa',           
+        'temuan_klinis',      
+        'diagnosa',           
         'deleted_by'
     ];
 

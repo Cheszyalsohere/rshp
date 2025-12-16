@@ -25,14 +25,14 @@ class RekamMedisPerawatController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'idreservasi_dokter' => 'required',
+            'id_reservasi_dokter' => 'required',
             'anamnesa' => 'required',
             'temuan_klinis' => 'required',
         ]);
 
         // Simpan atau Update data
         RekamMedis::updateOrCreate(
-            ['idreservasi_dokter' => $request->idreservasi_dokter],
+            ['id_reservasi_dokter' => $request->id_reservasi_dokter],
             [
                 'anamnesa' => $request->anamnesa,
                 'temuan_klinis' => $request->temuan_klinis,

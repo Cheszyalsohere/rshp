@@ -19,7 +19,6 @@ class KodeTindakanTerapi extends Model
     ];
     public $timestamps = false;
 
-
     public function kategori()
     {
         return $this->belongsTo(

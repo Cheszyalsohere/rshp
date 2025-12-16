@@ -24,19 +24,15 @@ class Pet extends Model
         return $this->hasMany(TemuDokter::class, 'idpet', 'idpet');
     }
 
-    /**
-     * Relasi HasManyThrough
-     * Mengambil data Rekam Medis melalui tabel perantara (TemuDokter)
-     */
     public function rekamMedis()
     {
         return $this->hasManyThrough(
-            RekamMedis::class,      // Model Tujuan (Akhir)
-            TemuDokter::class,      // Model Perantara
-            'idpet',                // FK di tabel perantara (temu_dokter.idpet)
-            'id_reservasi_dokter',   // FK di tabel tujuan (rekam_medis.idreservasi_dokter)
-            'idpet',                // Local Key di tabel asal (pet.idpet)
-            'id_reservasi_dokter'    // Local Key di tabel perantara (temu_dokter.idreservasi_dokter)
+            RekamMedis::class,      
+            TemuDokter::class,      
+            'idpet',               
+            'id_reservasi_dokter', 
+            'idpet',                
+            'id_reservasi_dokter'
         );
     }
 }

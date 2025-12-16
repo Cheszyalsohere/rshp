@@ -300,6 +300,49 @@
     }
     .form-text {
         color: #6b7280;
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Modal Buttons */
+    .btn-modal-primary {
+        padding: 0.625rem 1.25rem;
+        background: #111827;
+        color: white;
+        border: 1px solid #111827;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+    .btn-modal-primary:hover {
+        background: #1f2937;
+        border-color: #1f2937;
+        color: white;
+        text-decoration: none;
+    }
+    .btn-modal-secondary {
+        padding: 0.625rem 1.25rem;
+        background: white;
+        color: #111827;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .btn-modal-secondary:hover {
+        background: #f9fafb;
+        border-color: #111827;
+        text-decoration: none;
+    }
+    .form-text {
+        color: #6b7280;
         font-size: 0.813rem;
         margin-top: 0.5rem;
     }
@@ -422,7 +465,7 @@
                                 <button type="button" 
                                     class="btn-action"
                                     onclick="bukaModalTriage(
-                                        '{{ $row->idreservasi_dokter }}',
+                                        '{{ $row->id_reservasi_dokter }}',
                                         '{{ $row->pet->nama }}',
                                         '{{ $row->pet->rasHewan->nama_ras }}',
                                         '{{ $row->idrole_user }}',
@@ -468,7 +511,7 @@
                 @csrf
                 <div class="modal-body">
                     {{-- Hidden Inputs --}}
-                    <input type="hidden" name="idreservasi_dokter" id="input_idreservasi">
+                    <input type="hidden" name="id_reservasi_dokter" id="input_id_reservasi">
                     <input type="hidden" name="dokter_pemeriksa_dummy" id="input_iddokter">
 
                     {{-- Patient Info Card --}}
@@ -517,21 +560,33 @@
 {{-- JavaScript --}}
 <script>
     function bukaModalTriage(idRes, namaPet, rasPet, idDokter, anamnesaLama, vitalLama) {
-        // Isi nilai ke dalam Input Form
-        document.getElementById('input_idreservasi').value = idRes;
-        document.getElementById('input_iddokter').value = idDokter;
-        
-        // Update Label Info Pasien
-        document.getElementById('label_nama_pasien').innerText = namaPet;
-        document.getElementById('label_ras').innerText = rasPet;
+        try {
+            // Isi nilai ke dalam Input Form
+            document.getElementById('input_id_reservasi').value = idRes;
+            document.getElementById('input_iddokter').value = idDokter;
+            
+            // Update Label Info Pasien
+            document.getElementById('label_nama_pasien').innerText = namaPet;
+            document.getElementById('label_ras').innerText = rasPet;
 
-        // Isi Textarea (jika data lama ada/edit mode)
-        document.getElementById('input_anamnesa').value = anamnesaLama;
-        document.getElementById('input_vital').value = vitalLama;
+            // Isi Textarea (jika data lama ada/edit mode)
+            document.getElementById('input_anamnesa').value = anamnesaLama || '';
+            document.getElementById('input_vital').value = vitalLama || '';
 
-        // Tampilkan Modal
-        var myModal = new bootstrap.Modal(document.getElementById('modalTriage'));
-        myModal.show();
+            // Tampilkan Modal dengan Bootstrap 5
+            const modalElement = document.getElementById('modalTriage');
+            if (modalElement) {
+                const modal = new bootstrap.Modal(modalElement, {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                modal.show();
+            } else {
+                console.error('Modal element not found');
+            }
+        } catch (error) {
+            console.error('Error opening modal:', error);
+        }
     }
 </script>
 @endsection

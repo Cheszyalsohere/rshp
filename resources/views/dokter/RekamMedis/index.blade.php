@@ -483,7 +483,7 @@
                                 </div>
                             </td>
                             <td class="text-end">
-                                <a href="{{ route('Dokter.Pemeriksaan.edit', $rm->idreservasi_dokter) }}" class="btn-detail">
+                                <a href="{{ route('Dokter.Pemeriksaan.edit', $rm->id_reservasi_dokter) }}" class="btn-detail">
                                     Detail
                                 </a>
                             </td>

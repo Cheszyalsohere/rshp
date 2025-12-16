@@ -439,73 +439,7 @@
             </div>
         </div>
 
-        {{-- Section: Antrian Pemeriksaan --}}
-        <div>
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="bi bi-calendar-check"></i>
-                    Antrian Pemeriksaan Hari Ini
-                </h2>
-            </div>
 
-            {{-- Table Card --}}
-            <div class="card-table">
-                <div class="table-responsive">
-                    <table class="table table-custom">
-                        <thead>
-                            <tr>
-                                <th>Jam</th>
-                                <th>Pasien</th>
-                                <th>Pemilik</th>
-                                <th width="12%">Status</th>
-                                <th width="12%" class="text-end">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($pasienHariIni as $p)
-                            <tr>
-                                <td>
-                                    <span class="time-text">{{ \Carbon\Carbon::parse($p->waktu_daftar)->format('H:i') }}</span>
-                                </td>
-                                <td>
-                                    <span class="pet-name">{{ $p->pet->nama }}</span><br>
-                                    <small class="pet-ras">{{ $p->pet->rasHewan->nama_ras }}</small>
-                                </td>
-                                <td>{{ $p->pet->pemilik->user->nama }}</td>
-                                <td>
-                                    @if($p->status == '0')
-                                        <span class="badge-status menunggu">Menunggu</span>
-                                    @elseif($p->status == '1')
-                                        <span class="badge-status diperiksa">Diperiksa</span>
-                                    @else
-                                        <span class="badge-status selesai">Selesai</span>
-                                    @endif
-                                </td>
-                                <td class="text-end">
-                                    @if($p->status != '2')
-                                        <a href="{{ route('Dokter.Pemeriksaan.edit', $p->id_reservasi_dokter) }}" class="btn-action">
-                                            Periksa
-                                        </a>
-                                    @else
-                                        <button class="btn-action disabled" disabled>Selesai</button>
-                                    @endif
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="5">
-                                    <div class="empty-state">
-                                        <i class="bi bi-calendar-x"></i>
-                                        <p class="mb-0">Tidak ada jadwal hari ini</p>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
 
     </div>
 </div>

@@ -45,13 +45,11 @@ class TemuDokter extends Model
         };
     }
 
-    // Relasi ke Pet
     public function pet()
     {
         return $this->belongsTo(DaftarPet::class, 'idpet', 'idpet');
     }
 
-    // Relasi ke Dokter (RoleUser)
     public function dokter()
     {
         return $this->belongsTo(RoleUser::class, 'idrole_user', 'idrole_user');
@@ -59,6 +57,6 @@ class TemuDokter extends Model
 
     public function rekamMedis()
     {
-        return $this->hasMany(RekamMedis::class, 'id_reservasi_dokter', 'id_reservasi_dokter');
+        return $this->hasOne(RekamMedis::class, 'id_reservasi_dokter', 'id_reservasi_dokter');
     }
 }
