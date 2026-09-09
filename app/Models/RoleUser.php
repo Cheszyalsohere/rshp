@@ -13,6 +13,12 @@ class RoleUser extends Model
     protected $fillable = ['idrole', 'iduser'];
     public $timestamps = false;
 
+    protected $casts = [
+        'idrole' => 'integer',
+        'iduser' => 'integer',
+        'status' => 'integer',
+    ];
+
     public function getStatusLabelAttribute(): string
     {
         return $this->status ? 'Aktif' : 'Nonaktif';
