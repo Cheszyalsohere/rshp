@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
@@ -18,7 +17,7 @@ class LoginController extends Controller
 
     protected $redirectTo = '/home';
 
-    public function login(Request $request) 
+    public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
@@ -29,30 +28,30 @@ class LoginController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $user = User::with(['RoleUser' => function($query) { 
+        $user = User::with(['RoleUser' => function ($query) {
             $query->where('status', 1);
         }, 'RoleUser.role'])
-        ->where('email', $request->input('email'))
-        ->first();
+            ->where('email', $request->input('email'))
+            ->first();
 
         // Untuk Pengecekan Email
-        if (!$user) {
+        if (! $user) {
             return redirect()->back()
-            ->withErrors(['email' => 'Email Tidak Ditemukan.'])
-            ->withInput();
+                ->withErrors(['email' => 'Email Tidak Ditemukan.'])
+                ->withInput();
         }
 
         // Untuk Pengecekan Password
-        if (!Hash::check($request->password, $user->password)) {
+        if (! Hash::check($request->password, $user->password)) {
             return redirect()->back()
-            ->withErrors(['password' => 'Password Salah.'])
-            ->withInput();
+                ->withErrors(['password' => 'Password Salah.'])
+                ->withInput();
         }
 
         // Pastikan user punya role aktif sebelum di-login-kan
         $roleUser = $user->RoleUser->first();
 
-        if (!$roleUser) {
+        if (! $roleUser) {
             return redirect()->back()
                 ->withErrors(['email' => 'Akun ini belum memiliki role aktif. Hubungi administrator.'])
                 ->withInput();
@@ -62,6 +61,9 @@ class LoginController extends Controller
         $namaRole = Role::where('idrole', $userRole)->first();
 
         Auth::login($user);
+
+        // Cegah session fixation: terbitkan ID sesi baru setelah login
+        $request->session()->regenerate();
 
         $request->session()->put([
             'user_id' => $user->iduser,
@@ -88,6 +90,7 @@ class LoginController extends Controller
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
+
                 return redirect()->route('login')
                     ->withErrors(['email' => 'Role akun tidak dikenali. Hubungi administrator.']);
         }
@@ -117,5 +120,7 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
+        // Batasi percobaan login untuk mencegah brute-force
+        $this->middleware('throttle:10,1')->only('login');
     }
 }

@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Resepsionis;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Pet;
+use Illuminate\Http\Request;
 
 class PetController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'idpemilik' => 'required|exists:pemilik,idpemilik',
             'nama' => 'required|string|max:100',
             'idras_hewan' => 'required|exists:ras_hewan,idras_hewan',
@@ -22,7 +22,7 @@ class PetController extends Controller
             'warna_tanda' => 'nullable|string',
         ]);
 
-        Pet::create($request->all());
+        Pet::create($data);
 
         return redirect()->back()->with('success', 'Data hewan berhasil ditambahkan.');
     }
@@ -30,7 +30,18 @@ class PetController extends Controller
     public function update(Request $request, $id)
     {
         $pet = Pet::findOrFail($id);
-        $pet->update($request->all());
+
+        // Hanya field yang boleh diubah (kepemilikan hewan tidak diubah lewat sini)
+        $data = $request->validate([
+            'nama' => 'required|string|max:100',
+            'idras_hewan' => 'required|exists:ras_hewan,idras_hewan',
+            'jenis_kelamin' => 'required|in:J,B',
+            'tanggal_lahir' => 'required|date',
+            'warna_tanda' => 'nullable|string',
+        ]);
+
+        $pet->update($data);
+
         return redirect()->back()->with('success', 'Data hewan diperbarui.');
     }
 }

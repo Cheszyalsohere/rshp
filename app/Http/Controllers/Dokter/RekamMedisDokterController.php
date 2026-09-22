@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Dokter;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\TemuDokter;
-use App\Models\RekamMedis;
 use App\Models\DetailRekamMedis;
 use App\Models\KodeTindakanTerapi;
+use App\Models\RekamMedis;
 use App\Models\RoleUser;
+use App\Models\TemuDokter;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RekamMedisDokterController extends Controller
 {
@@ -33,19 +33,19 @@ class RekamMedisDokterController extends Controller
 
         // --- PERBAIKAN DI SINI ---
         // Ambil ID Dokter dari data Reservasi agar tidak error "Column cannot be null"
-        $dokterId = $reservasi->idrole_user; 
+        $dokterId = $reservasi->idrole_user;
 
         // Gunakan firstOrCreate dengan data default yang lengkap
         $rekamMedis = RekamMedis::firstOrCreate(
             ['id_reservasi_dokter' => $id_reservasi],
             [
                 'dokter_pemeriksa' => $dokterId, // Isi dengan dokter yang dituju
-                
+
                 // Kita isi strip (-) untuk jaga-jaga jika kolom ini juga NOT NULL di database Anda
-                'anamnesa' => '-', 
+                'anamnesa' => '-',
                 'temuan_klinis' => '-',
-                'diagnosa' => 'Belum diisi dokter' 
-            ] 
+                'diagnosa' => 'Belum diisi dokter',
+            ]
         );
         // -------------------------
 
@@ -80,12 +80,14 @@ class RekamMedisDokterController extends Controller
     // 4. Tambah Detail Tindakan
     public function storeDetail(Request $request)
     {
-        $request->validate([
-            'idrekam_medis' => 'required',
-            'idkode_tindakan_terapi' => 'required',
+        $data = $request->validate([
+            'idrekam_medis' => 'required|exists:rekam_medis,idrekam_medis',
+            'idkode_tindakan_terapi' => 'required|exists:kode_tindakan_terapi,idkode_tindakan_terapi',
+            'detail' => 'nullable|string',
         ]);
 
-        DetailRekamMedis::create($request->all());
+        DetailRekamMedis::create($data);
+
         return redirect()->back()->with('success', 'Tindakan ditambahkan.');
     }
 
@@ -93,6 +95,7 @@ class RekamMedisDokterController extends Controller
     public function destroyDetail($id)
     {
         DetailRekamMedis::findOrFail($id)->delete();
+
         return redirect()->back()->with('success', 'Tindakan dihapus.');
     }
 }
