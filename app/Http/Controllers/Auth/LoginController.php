@@ -49,20 +49,28 @@ class LoginController extends Controller
             ->withInput();
         }
 
-        $namaRole = Role::where('idrole', $user->RoleUser->first()->idrole ?? null)->first();
+        // Pastikan user punya role aktif sebelum di-login-kan
+        $roleUser = $user->RoleUser->first();
+
+        if (!$roleUser) {
+            return redirect()->back()
+                ->withErrors(['email' => 'Akun ini belum memiliki role aktif. Hubungi administrator.'])
+                ->withInput();
+        }
+
+        $userRole = (int) $roleUser->idrole;
+        $namaRole = Role::where('idrole', $userRole)->first();
 
         Auth::login($user);
 
         $request->session()->put([
-            'user_id' => $user->id,
+            'user_id' => $user->iduser,
             'user_name' => $user->nama,
             'user_email' => $user->email,
-            'user_role' => $user->RoleUser->first()->idrole ?? 'user',
+            'user_role' => $userRole,
             'user_role_name' => $namaRole->nama_role ?? 'User',
-            'user_status' => $user->RoleUser->first()->status ?? 'active'
+            'user_status' => $roleUser->status ?? 'active',
         ]);
-
-        $userRole = $user->RoleUser[0]->idrole ?? null;
 
         switch ($userRole) {
             case 1:
@@ -73,9 +81,15 @@ class LoginController extends Controller
                 return redirect()->route('Perawat.Dashboard.index')->with('success', 'Login Berhasil!');
             case 4:
                 return redirect()->route('Resepsionis.Dashboard.index')->with('success', 'Login Berhasil!');
-            default:
+            case 5:
                 return redirect()->route('Pemilik.Dashboard.index')->with('success', 'Login Berhasil!');
-                
+            default:
+                // Role tidak dikenali: batalkan sesi agar tidak "login tapi terkunci"
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return redirect()->route('login')
+                    ->withErrors(['email' => 'Role akun tidak dikenali. Hubungi administrator.']);
         }
     }
 

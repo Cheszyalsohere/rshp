@@ -18,7 +18,7 @@ Route::get('/dokter', [\App\Http\Controllers\Site\SiteController::class, 'dokter
 
 Route::get('/cek-koneksi', [\App\Http\Controllers\Site\SiteController::class, 'CekKoneksi'])->name('site.cek-koneksi');
 
-Route::middleware('isAdministrator')->group(function () {
+Route::middleware(['auth', 'role:1'])->group(function () {
         Route::get('admin/dashboard', [\App\Http\Controllers\Admin\dashboard_admin::class, 'index'])->name('admin.dashboard');
         Route::prefix('admin/jenis-hewan')->name('Admin.jenis-hewan.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\JenisHewanController::class, 'index'])->name('index');
@@ -100,7 +100,7 @@ Auth::routes();
 
 Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::middleware(['auth', 'isResepsionis'])->group(function () {
+Route::middleware(['auth', 'role:4'])->group(function () {
     
     // 1. Dashboard
     Route::get('/resepsionis/dashboard', [App\Http\Controllers\Resepsionis\DashboardResepsionisController::class, 'index'])->name('Resepsionis.Dashboard.index');
@@ -126,7 +126,7 @@ Route::middleware(['auth', 'isResepsionis'])->group(function () {
     });
 });
 
-Route::middleware(['auth', 'pemilik'])->group(function () {
+Route::middleware(['auth', 'role:5'])->group(function () {
     
     // 1. Dashboard & Antrian
     Route::get('/pemilik/dashboard', [App\Http\Controllers\Pemilik\DashboardPemilikController::class, 'index'])->name('Pemilik.Dashboard.index');
@@ -143,7 +143,7 @@ Route::middleware(['auth', 'pemilik'])->group(function () {
 });
 
 
-Route::middleware(['auth', 'dokter'])->group(function () {
+Route::middleware(['auth', 'role:2'])->group(function () {
 
     // 1. Dashboard Dokter
     Route::get('/dokter/dashboard', [App\Http\Controllers\Dokter\DashboardDokterController::class, 'index'])->name('Dokter.Dashboard.index');
@@ -179,7 +179,7 @@ Route::middleware(['auth', 'dokter'])->group(function () {
 });
 
 
-Route::middleware(['auth', 'perawat'])->group(function () {
+Route::middleware(['auth', 'role:3'])->group(function () {
     
     // 1. Dashboard
     Route::get('/perawat/dashboard', [App\Http\Controllers\Perawat\DashboardPerawatController::class, 'index'])->name('Perawat.Dashboard.index');
