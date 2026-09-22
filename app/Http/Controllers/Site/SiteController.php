@@ -20,27 +20,27 @@ class SiteController extends Controller
 
     public function layanan()
     {
-        return view('layanan');
+        return view('sites.layanan');
     }
-    
+
     public function kontak()
     {
-        return view('kontak');
+        return view('sites.kontak');
     }
 
     public function organisasi()
     {
-        return view('organisasi');
+        return view('sites.organisasi');
     }
 
     public function about()
     {
-        return view('about');
+        return view('sites.about');
     }
 
     public function dokter()
     {
-        return view('dokter');
+        return view('sites.dokter');
     }
 
     public function CekKoneksi()
